@@ -107,16 +107,17 @@ function define_constants () {
 }
 function sprite_count () {
     count = 0
-    for (let kind of [SpriteKind.Player, SpriteKind.Tail, SpriteKind.HUD, SpriteKind.FakeTile, SpriteKind.StatusBar]) {
+    for (let kind of [
+    SpriteKind.Player,
+    SpriteKind.Tail,
+    SpriteKind.HUD,
+    SpriteKind.FakeTile,
+    SpriteKind.StatusBar
+    ]) {
         count += sprites.allOfKind(kind).length
     }
     return count
 }
-controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (sprite_player) {
-        move_snake(sprite_player, false, false)
-    }
-})
 scene.onHitWall(SpriteKind.Player, function (sprite, location) {
     die(sprite)
     if (sprite == sprite_player) {
@@ -170,11 +171,6 @@ function move_snake (snake: Sprite, vx_or_vy: boolean, pos_or_neg: boolean) {
         })
     })
 }
-controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (sprite_player) {
-        move_snake(sprite_player, true, false)
-    }
-})
 function rotate_direction_neg_90 (direction: number) {
     if (direction == CollisionDirection.Left) {
         return CollisionDirection.Bottom
@@ -201,6 +197,11 @@ function die (snake: Sprite) {
     sprites.readDataSprite(snake, "tail").destroy()
     snake.destroy()
 }
+controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (sprite_player) {
+        move_snake(sprite_player, false, true)
+    }
+})
 // https://en.wikipedia.org/wiki/Flood_fill#Moving_the_recursion_into_a_data_structure
 function flood_fill (col: number, row: number, fill_with: Image, border: Image) {
     if (show_debug) {
@@ -238,6 +239,11 @@ function flood_fill (col: number, row: number, fill_with: Image, border: Image) 
         flood_time = game.runtime() - flood_start_time
     }
 }
+controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (sprite_player) {
+        move_snake(sprite_player, false, false)
+    }
+})
 function get_fake_tile (col: number, row: number) {
     for (let sprite_tile of sprites.allOfKind(SpriteKind.FakeTile)) {
         if (tiles.locationXY(tiles.locationOfSprite(sprite_tile), tiles.XY.column) == col && tiles.locationXY(tiles.locationOfSprite(sprite_tile), tiles.XY.row) == row) {
@@ -249,11 +255,6 @@ function get_fake_tile (col: number, row: number) {
 function direction_to_inside (heading: number, to: number, col: number, row: number) {
     return tiles.locationInDirection(tiles.locationInDirection(tiles.getTileLocation(col, row), flip_direction(heading)), to)
 }
-controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (sprite_player) {
-        move_snake(sprite_player, true, true)
-    }
-})
 function die_player () {
     music.footstep.play()
     timer.after(2000, function () {
@@ -394,6 +395,11 @@ function trace (col: number, row: number, fill: Image) {
         trace_time = game.runtime() - trace_start_time
     }
 }
+controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (sprite_player) {
+        move_snake(sprite_player, true, true)
+    }
+})
 function rotate_direction_pos_90 (direction: number) {
     if (direction == CollisionDirection.Left) {
         return CollisionDirection.Top
@@ -405,11 +411,6 @@ function rotate_direction_pos_90 (direction: number) {
         return CollisionDirection.Left
     }
 }
-controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
-    if (sprite_player) {
-        move_snake(sprite_player, false, true)
-    }
-})
 function make_tilemap () {
     scene.setBackgroundColor(13)
     tiles.setSmallTilemap(tilemap`tilemap`)
@@ -489,6 +490,11 @@ function create_leaderboard () {
         top_5_bars[index].setStatusBarFlag(StatusBarFlag.InvertFillDirection, true)
     }
 }
+controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (sprite_player) {
+        move_snake(sprite_player, true, false)
+    }
+})
 function format_time (secs: number) {
     return "" + Math.idiv(secs, 60) + "m " + spriteutils.roundWithPrecision(secs % 60, 2) + "s"
 }
@@ -511,7 +517,7 @@ let snake_image: Image = null
 let flood_time = 0
 let locations: tiles.Location[] = []
 let flood_start_time = 0
-let direction = 0
+let direction: CollisionDirection = null
 let sprite_tile: Sprite = null
 let count = 0
 let all_colors: number[] = []

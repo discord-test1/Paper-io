@@ -1,4 +1,4 @@
-// Auto-generated code. Do not edit.
+// Code généré automatiquement. Ne pas modifier.
 namespace myImages {
 
     helpers._registerFactory("image", function(name: string) {
@@ -28,5 +28,12 @@ namespace myImages {
         return null;
     })
 
+    helpers._registerFactory("song", function(name: string) {
+        switch(helpers.stringTrim(name)) {
+
+        }
+        return null;
+    })
+
 }
-// Auto-generated code. Do not edit.
+// Code généré automatiquement. Ne pas modifier.
